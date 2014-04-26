@@ -89,6 +89,7 @@
 		'beforeChange': 1
 		,'beforeInitStep': 1
 		,'initStep': 1
+		,'checkNoSupport': 1
 		,'beforeInit': 1
 		,'afterInit': 1
 		,'beforeDeinit': 1
@@ -546,7 +547,8 @@
 		// BEGIN INIT
 
 		// CHECK FOR SUPPORT
-		if (checkSupport() === false) {
+		if (checkSupport() === false || callCallback.call(this, 'checkNoSupport', null, {})) {
+			// not supported
 			if (settings.notSupportedClass) {
 				jmpress.addClass(settings.notSupportedClass);
 			}
@@ -604,16 +606,14 @@
 		};
 		props = $.extend({}, settings.animation, props);
 		css(area, props);
-		css(area, {
-			top: '50%'
-			,left: '50%'
-			,perspective: '1000px'
-		});
 		css(canvas, props);
 
 		current = {};
 
-		callCallback.call(this, 'beforeInit', null, {});
+		callCallback.call(this, 'beforeInit', null, {
+			canvas: canvas,
+			area: area
+		});
 
 		// INITIALIZE EACH STEP
 		steps.each(function( idx ) {
